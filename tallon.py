@@ -56,11 +56,11 @@ class Tallon():
             mm.append([mns.x,(worldBreadth-1)-mns.y])
 
    
-        cc =[]
-        tt =[]
-        cc.append([firstBonus.x,(worldBreadth-1)-firstBonus.y])
-        tt.append([allPits[0].x,(worldBreadth-1)-allPits[0].y])
-        print(cc,tt)
+        # cc =[]
+        # tt =[]
+        # cc.append([firstBonus.x,(worldBreadth-1)-firstBonus.y])
+        # tt.append([allPits[0].x,(worldBreadth-1)-allPits[0].y])
+        # print(cc,tt)
 
         
         
@@ -77,7 +77,7 @@ class Tallon():
      
         R3 = np.array(a)
         # R3 = np.flipud(R3)
-        print(R3)
+        # print(R3)
         myPosition = self.gameWorld.getTallonLocation()
        
         rightDir = .8
@@ -383,7 +383,7 @@ class Tallon():
         # finaldd = np.flipud(finaldd)
         # print(finaldd)
         finaldd2  =np.array(finaldd2)
-        # finaldd2 = np.flipud(finaldd2)
+        finaldd2 = np.flipud(finaldd2)
         # print(finaldd2)
          # open the file in the write mode
         f = open('D:/Uni projects/AI/meanArena/FINLDD.txt', 'w')
@@ -396,22 +396,88 @@ class Tallon():
 
         # close the file
         f.close()
-        print(finaldd2)
+        # print(np.flipud(finaldd))
+        # print(finaldd2)
+        for jiu in finaldd2:
+            print(*jiu)
         themove = finaldd[myPosition.x][(worldBreadth-1)-myPosition.y]
         
-        if(themove == 0):
-            print("Right")
-            return Directions.EAST
-        elif(themove == 1):
-            print("Left")
-            return Directions.WEST
-        elif(themove == 2):
-            print("Up")
-            return Directions.SOUTH
-        elif(themove == 3):
-            print("Down")
-            return Directions.NORTH
-      
+        # if(themove == 0):
+        #     print("Right")
+        #     return Directions.EAST
+        # elif(themove == 1):
+        #     print("Left")
+        #     return Directions.WEST
+        # elif(themove == 2):
+        #     print("Up")
+        #     return Directions.SOUTH
+        # elif(themove == 3):
+        #     print("Down")
+        #     return Directions.NORTH
+        
+
+        gg=[]
+        #UP
+        ox = myPosition.x
+        oy = myPosition.y
+        if(ox>=0 and ox<worldLength):
+            if(oy+1>=0 and oy+1<worldBreadth):
+                print("position",[ox,oy])
+                gg.append(finaldd2[oy+1][ox])
+            else:
+                gg.append(0)
+        else:
+                gg.append(0)
+        #DOWN
+        if(ox>=0 and ox<worldLength):
+            if(oy-1>=0 and oy-1<worldBreadth):
+                print("position",[ox,oy])
+                gg.append(finaldd2[oy-1][ox])
+            else:
+                gg.append(0)
+        else:
+                gg.append(0)
+        #RIGHT
+        if(ox+1>=0 and ox+1<worldLength):
+            if(oy>=0 and oy<worldBreadth):
+                print("position",[ox,oy])
+                gg.append(finaldd2[oy][ox+1])
+            else:
+                gg.append(0)
+        else:
+                gg.append(0)
+        #LEFT
+        if(ox-1>=0 and ox-1<worldLength):
+            if(oy>=0 and oy<worldBreadth):
+                print("position",[ox,oy])
+                gg.append(finaldd2[oy][ox-1])
+            else:
+                gg.append(0)
+        else:
+                gg.append(0)
+
+ 
+        
+        max_value = max(gg)
+        
+        print(gg,"-->",max_value)
+        max_index = gg.index(max_value)
+        
+        
+        if(max_index == 0):
+                print("NORTH")
+                return Directions.NORTH
+        elif(max_index == 1):
+                print("SOUTH")
+                return Directions.SOUTH
+        elif(max_index == 2):
+                print("EAST")
+                return Directions.EAST
+        elif(max_index == 3):
+                print("WEST")
+                return Directions.WEST
+            
+
       #################################################################################
     #     Rtable = np.zeros((worldLength,worldBreadth))
     #     Utable = np.zeros((worldLength,worldBreadth))

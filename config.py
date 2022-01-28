@@ -8,8 +8,8 @@
 # Last Modified: 12/01/22
 
 # Dimensions in terms of the numbers of rows and columns
-worldLength = 6
-worldBreadth = 6
+worldLength = 10
+worldBreadth = 10
 
 # Features
 numberOfMeanies = 1 # How many we start with

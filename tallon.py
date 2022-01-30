@@ -43,10 +43,17 @@ class Tallon():
         firstBonus = allBonuses[0]
         allPits = self.gameWorld.getPitsLocation() 
         allMeanies = self.gameWorld.getMeanieLocation()
+
+
+
+
+
+
         a=[]
         cc =[]
         tt =[]
         mm =[]
+        mmProx =[]
         for ik in allBonuses:
             cc.append([ik.x,(worldBreadth-1)-ik.y])
         for pts in allPits:
@@ -54,6 +61,11 @@ class Tallon():
         
         for mns in allMeanies:
             mm.append([mns.x,(worldBreadth-1)-mns.y])
+        for mns in allMeanies:
+            mmProx.append([mns.x+1,(worldBreadth-1)-mns.y])
+            mmProx.append([mns.x-1,(worldBreadth-1)-mns.y])
+            mmProx.append([mns.x,((worldBreadth-1)-mns.y)+1])
+            mmProx.append([mns.x,((worldBreadth-1)-mns.y)+1])
 
    
         # cc =[]
@@ -68,10 +80,14 @@ class Tallon():
         cost = -0.04
         for k in range (worldBreadth):
             for j in range(worldLength):
-                if([j,k] in cc):
-                     a.append([1,1,1,1])
-                elif([j,k] in tt):
+                if([j,k] in tt):
                     a.append([-1,-1,-1,-1])
+                elif([j,k] in mm):
+                    a.append([-3,-3,-3,-3])
+                elif([j,k] in mmProx):
+                    a.append([-2,-2,-2,-2])
+                elif([j,k] in cc):
+                     a.append([1,1,1,1])
                 else:
                     a.append([cost,cost,cost,cost])
      
@@ -95,6 +111,20 @@ class Tallon():
                     for n in range(worldBreadth):
                         for m in range(worldLength):
                             if(actCountx == m and actCounty == n and [m,n] in tt):
+                                rmat.append(1)
+                            else:
+                                rmat.append(0)
+                elif([actCountx,actCounty] in mm):
+                    for n in range(worldBreadth):
+                        for m in range(worldLength):
+                            if(actCountx == m and actCounty == n and [m,n] in mm):
+                                rmat.append(1)
+                            else:
+                                rmat.append(0)
+                elif([actCountx,actCounty] in mmProx):
+                    for n in range(worldBreadth):
+                        for m in range(worldLength):
+                            if(actCountx == m and actCounty == n and [m,n] in mmProx):
                                 rmat.append(1)
                             else:
                                 rmat.append(0)
@@ -161,6 +191,20 @@ class Tallon():
                                 rmat.append(1)
                             else:
                                 rmat.append(0)
+                elif([actCountx,actCounty] in mm):
+                    for n in range(worldBreadth):
+                        for m in range(worldLength):
+                            if(actCountx == m and actCounty == n and [m,n] in mm):
+                                rmat.append(1)
+                            else:
+                                rmat.append(0)
+                elif([actCountx,actCounty] in mmProx):
+                    for n in range(worldBreadth):
+                        for m in range(worldLength):
+                            if(actCountx == m and actCounty == n and [m,n] in mmProx):
+                                rmat.append(1)
+                            else:
+                                rmat.append(0)
                 elif([actCountx,actCounty] in cc):
                     for n in range(worldBreadth):
                         for m in range(worldLength):
@@ -224,6 +268,20 @@ class Tallon():
                                 rmat.append(1)
                             else:
                                 rmat.append(0)
+                elif([actCountx,actCounty] in mm):
+                    for n in range(worldBreadth):
+                        for m in range(worldLength):
+                            if(actCountx == m and actCounty == n and [m,n] in mm):
+                                rmat.append(1)
+                            else:
+                                rmat.append(0)
+                elif([actCountx,actCounty] in mmProx):
+                    for n in range(worldBreadth):
+                        for m in range(worldLength):
+                            if(actCountx == m and actCounty == n and [m,n] in mmProx):
+                                rmat.append(1)
+                            else:
+                                rmat.append(0)
                 elif([actCountx,actCounty] in cc):
                     for n in range(worldBreadth):
                         for m in range(worldLength):
@@ -231,6 +289,7 @@ class Tallon():
                                 rmat.append(1)
                             else:
                                 rmat.append(0)
+                
                 else:
                     for n in range(worldBreadth):
                         for m in range(worldLength):
@@ -284,6 +343,20 @@ class Tallon():
                     for n in range(worldBreadth):
                         for m in range(worldLength):
                             if(actCountx == m and actCounty == n and [m,n] in tt):
+                                rmat.append(1)
+                            else:
+                                rmat.append(0)
+                elif([actCountx,actCounty] in mm):
+                    for n in range(worldBreadth):
+                        for m in range(worldLength):
+                            if(actCountx == m and actCounty == n and [m,n] in mm):
+                                rmat.append(1)
+                            else:
+                                rmat.append(0)
+                elif([actCountx,actCounty] in mmProx):
+                    for n in range(worldBreadth):
+                        for m in range(worldLength):
+                            if(actCountx == m and actCounty == n and [m,n] in mmProx):
                                 rmat.append(1)
                             else:
                                 rmat.append(0)
@@ -425,36 +498,36 @@ class Tallon():
                 print("position",[ox,oy])
                 gg.append(finaldd2[oy+1][ox])
             else:
-                gg.append(0)
+                gg.append(-100)
         else:
-                gg.append(0)
+                gg.append(-100)
         #DOWN
         if(ox>=0 and ox<worldLength):
             if(oy-1>=0 and oy-1<worldBreadth):
                 print("position",[ox,oy])
                 gg.append(finaldd2[oy-1][ox])
             else:
-                gg.append(0)
+                gg.append(-100)
         else:
-                gg.append(0)
+                gg.append(-100)
         #RIGHT
         if(ox+1>=0 and ox+1<worldLength):
             if(oy>=0 and oy<worldBreadth):
                 print("position",[ox,oy])
                 gg.append(finaldd2[oy][ox+1])
             else:
-                gg.append(0)
+                gg.append(-100)
         else:
-                gg.append(0)
+                gg.append(-100)
         #LEFT
         if(ox-1>=0 and ox-1<worldLength):
             if(oy>=0 and oy<worldBreadth):
                 print("position",[ox,oy])
                 gg.append(finaldd2[oy][ox-1])
             else:
-                gg.append(0)
+                gg.append(-100)
         else:
-                gg.append(0)
+                gg.append(-100)
 
  
         
@@ -477,7 +550,20 @@ class Tallon():
                 print("WEST")
                 return Directions.WEST
             
-
+    def isMeanieNear(locList, loc):
+        for aloc in locList:
+            if aloc.x == loc.x:
+                if aloc.y == loc.y + 1 or aloc.y == loc.y - 1:
+                    return True
+                else:
+                    return False
+            elif aloc.y == loc.y:
+                if aloc.x == loc.x + 1 or aloc.x == loc.x - 1:
+                    return True
+                else:
+                    return False
+            else:
+                return False
       #################################################################################
     #     Rtable = np.zeros((worldLength,worldBreadth))
     #     Utable = np.zeros((worldLength,worldBreadth))

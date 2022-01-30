@@ -8,18 +8,18 @@
 # Last Modified: 12/01/22
 
 # Dimensions in terms of the numbers of rows and columns
-worldLength = 10
-worldBreadth = 10
+worldLength = 15
+worldBreadth = 15
 
 # Features
 numberOfMeanies = 1 # How many we start with
 numberOfPits = 3
-numberOfBonuses = 1
+numberOfBonuses = 6
 
 # Control dynamism
 #
 # If dynamic is True, then the Meanies will move.
-dynamic = False
+dynamic = True
 
 # Control observability
 #
@@ -34,7 +34,7 @@ visibilityLimit = 6
 #
 # If nonDeterministic is True, Tallon's action model will be
 # nonDeterministic.
-nonDeterministic = False
+nonDeterministic = True
 #
 # If Tallon is nondeterministic, probability that they carry out the
 # intended action:

@@ -6,6 +6,8 @@
 #
 # Written by: Simon Parsons
 # Last Modified: 12/01/22
+#
+# Thanks to Ethan Henderson for tracking down several bugs.
 
 import random
 import config
@@ -104,15 +106,15 @@ class World():
 
     # Does Tallon feel the wind?
     def tallonWindy(self):
-        return isWindy(tLoc)
+        return self.isWindy(self.tLoc)
 
     # Does Tallon smell the Meanie?
     def tallonSmelly(self):
-        return isSmelly(tLoc)
+        return self.isSmelly(self.tLoc)
 
     # Does Tallon see the glow?
     def tallonGlow(self):
-        return isGlowing(tLoc)
+        return self.isGlowing(self.tLoc)
  
     #
     # Methods
@@ -149,15 +151,18 @@ class World():
             
     # Implements the move chosen by Tallon
     def updateTallon(self, direction):
-        # Set the looted flag to False
-        self.looted = False
+        # Set the bonus grabbed flag to False
+        # Correction due to Rachel Trimble here
+        self.grabbed = False
         # Implement non-determinism if appropriate
         direction = self.probabilisticMotion(direction)
-        if direction == Directions.NORTH:
+        # Note that y increases *down* the grid. Correction due to
+        # Ethan Henderson and Negar Pourmoazemi here.
+        if direction == Directions.SOUTH:
             if self.tLoc.y < self.maxY:
                 self.tLoc.y = self.tLoc.y + 1
             
-        if direction == Directions.SOUTH:
+        if direction == Directions.NORTH:
             if self.tLoc.y > 0:
                 self.tLoc.y = self.tLoc.y - 1
                 
@@ -306,7 +311,7 @@ class World():
     #
     # A location is smelly if it is next to a Meanie
     def isSmelly(self, location):
-        if isAjacent(self.mloc, location):
+        if self.isAjacent(self.mloc, location):
             return True
         else:
             return False
@@ -315,7 +320,7 @@ class World():
     #
     # A location is windy if it is near a pit
     def isWindy(self, location):
-        if isAjacent(self.ploc, location):
+        if self.isAjacent(self.ploc, location):
             return True
         else:
             return False
@@ -324,7 +329,7 @@ class World():
     #
     # The bonus stations glow
     def isGlowing(self, location):
-        if isAjacent(self.bloc, location):
+        if self.isAjacent(self.bloc, location):
             return True
         else:
             return False
@@ -335,7 +340,7 @@ class World():
     # x coordinate and have a y coordinate that differs by 1, or in
     # the same y coordinate and have an x coordinate that differs by
     # one.
-    def isAjacent(locList, loc):
+    def isAjacent(self, locList, loc):
         for aloc in locList:
             # Ajacency holds if it holds for any location in locList.
             if aloc.x == loc.x:

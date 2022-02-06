@@ -10,10 +10,11 @@ import sys
 import numpy
 numpy.set_printoptions(threshold=sys.maxsize)
 
+import csv
 
 import world
 import random
-from config import worldLength, worldBreadth
+from config import worldLength, worldBreadth, partialVisibility, visibilityLimit
 import utils
 from utils import Directions
 
@@ -40,7 +41,7 @@ class Tallon():
         # 
         # Get the location of the Bonuses.
         allBonuses = self.gameWorld.getBonusLocation()
-        firstBonus = allBonuses[0]
+        # firstBonus = allBonuses[0]
         allPits = self.gameWorld.getPitsLocation() 
         allMeanies = self.gameWorld.getMeanieLocation()
 
@@ -412,23 +413,16 @@ class Tallon():
         fullAction = np.array(fullAction)
         # print(fullAction)
         # print("***********")
-        import csv
-
-        # open the file in the write mode
-        f = open('D:/Uni projects/AI/meanArena/temptext.txt', 'w')
-
-        # create the csv writer
-        writer = csv.writer(f)
-
-        # write a row to the csv file
-        writer.writerow(R3)
-
-        # close the file
-        f.close()
+      
 
         mdptoolbox.util.check(fullAction, R3)
-
-        vi2 = mdptoolbox.mdp.PolicyIteration(fullAction, R3, 0.9)
+        vi2 = []
+        if(partialVisibility == True):
+            print("using qlearning")
+            vi2 = mdptoolbox.mdp.QLearning(fullAction, R3, 0.9)
+        else:
+            vi2 = mdptoolbox.mdp.PolicyIteration(fullAction, R3, 0.9)
+        #vi2 = mdptoolbox.mdp.PolicyIteration(fullAction, R3, 0.9)
         vi2.run()       
 
         dd =[]
@@ -453,28 +447,100 @@ class Tallon():
         
         # print([myPosition.x,myPosition.y],finaldd)
         finaldd  =np.array(finaldd)
-        # finaldd = np.flipud(finaldd)
+        finaldd = np.flipud(finaldd)
         # print(finaldd)
         finaldd2  =np.array(finaldd2)
         finaldd2 = np.flipud(finaldd2)
-        # print(finaldd2)
-         # open the file in the write mode
-        f = open('D:/Uni projects/AI/meanArena/FINLDD.txt', 'w')
+       
+
+        
+
+        print(finaldd2)
+
+        themove = finaldd[myPosition.x][(worldBreadth-1)-myPosition.y]
+        
+      
+
+        gg=[]
+        #UP
+        ox = myPosition.x
+        oy = myPosition.y
+        if(ox>=0 and ox<worldLength):
+            if(oy+1>=0 and oy+1<worldBreadth):
+                # print("position",[ox,oy])
+                gg.append(finaldd2[oy+1][ox])
+            else:
+                gg.append(-100)
+        else:
+                gg.append(-100)
+        #DOWN
+        if(ox>=0 and ox<worldLength):
+            if(oy-1>=0 and oy-1<worldBreadth):
+                # print("position",[ox,oy])
+                gg.append(finaldd2[oy-1][ox])
+            else:
+                gg.append(-100)
+        else:
+                gg.append(-100)
+        #RIGHT
+        if(ox+1>=0 and ox+1<worldLength):
+            if(oy>=0 and oy<worldBreadth):
+                # print("position",[ox,oy])
+                gg.append(finaldd2[oy][ox+1])
+            else:
+                gg.append(-100)
+        else:
+                gg.append(-100)
+        #LEFT
+        if(ox-1>=0 and ox-1<worldLength):
+            if(oy>=0 and oy<worldBreadth):
+                # print("position",[ox,oy])
+                gg.append(finaldd2[oy][ox-1])
+            else:
+                gg.append(-100)
+        else:
+                gg.append(-100)
+
+ 
+        
+        max_value = max(gg)
+        
+        # print(gg,"-->",max_value)
+        max_index = gg.index(max_value)
+
+
+  
+
+        # open the file in the write mode
+        f = open('D:/Uni projects/AI/git/meanArena/temptext.csv', 'a')
 
         # create the csv writer
         writer = csv.writer(f)
-
+        cccc = finaldd2
         # write a row to the csv file
-        writer.writerow(finaldd2)
-
+        for ynt in range(worldBreadth):
+            for xnt in range(worldLength):
+                if(ynt == oy and xnt == ox ):
+                    cccc[ynt][xnt] ="tallon"
+            writer.writerow(cccc[ynt])
+        writer.writerow("################################")
         # close the file
         f.close()
-        # print(np.flipud(finaldd))
-        # print(finaldd2)
-        for jiu in finaldd2:
-            print(*jiu)
-        themove = finaldd[myPosition.x][(worldBreadth-1)-myPosition.y]
         
+        if(max_index == 0):
+                print("SOUTH")
+                return Directions.SOUTH
+        elif(max_index == 1):
+                print("NORTH")
+                return Directions.NORTH
+        elif(max_index == 2):
+                print("EAST")
+                return Directions.EAST
+        elif(max_index == 3):
+                print("WEST")
+                return Directions.WEST
+            
+        # Policy movement
         # if(themove == 0):
         #     print("Right")
         #     return Directions.EAST
@@ -489,81 +555,6 @@ class Tallon():
         #     return Directions.NORTH
         
 
-        gg=[]
-        #UP
-        ox = myPosition.x
-        oy = myPosition.y
-        if(ox>=0 and ox<worldLength):
-            if(oy+1>=0 and oy+1<worldBreadth):
-                print("position",[ox,oy])
-                gg.append(finaldd2[oy+1][ox])
-            else:
-                gg.append(-100)
-        else:
-                gg.append(-100)
-        #DOWN
-        if(ox>=0 and ox<worldLength):
-            if(oy-1>=0 and oy-1<worldBreadth):
-                print("position",[ox,oy])
-                gg.append(finaldd2[oy-1][ox])
-            else:
-                gg.append(-100)
-        else:
-                gg.append(-100)
-        #RIGHT
-        if(ox+1>=0 and ox+1<worldLength):
-            if(oy>=0 and oy<worldBreadth):
-                print("position",[ox,oy])
-                gg.append(finaldd2[oy][ox+1])
-            else:
-                gg.append(-100)
-        else:
-                gg.append(-100)
-        #LEFT
-        if(ox-1>=0 and ox-1<worldLength):
-            if(oy>=0 and oy<worldBreadth):
-                print("position",[ox,oy])
-                gg.append(finaldd2[oy][ox-1])
-            else:
-                gg.append(-100)
-        else:
-                gg.append(-100)
-
- 
-        
-        max_value = max(gg)
-        
-        print(gg,"-->",max_value)
-        max_index = gg.index(max_value)
-        
-        
-        if(max_index == 0):
-                print("NORTH")
-                return Directions.NORTH
-        elif(max_index == 1):
-                print("SOUTH")
-                return Directions.SOUTH
-        elif(max_index == 2):
-                print("EAST")
-                return Directions.EAST
-        elif(max_index == 3):
-                print("WEST")
-                return Directions.WEST
-            
-    def isMeanieNear(locList, loc):
-        for aloc in locList:
-            if aloc.x == loc.x:
-                if aloc.y == loc.y + 1 or aloc.y == loc.y - 1:
-                    return True
-                else:
-                    return False
-            elif aloc.y == loc.y:
-                if aloc.x == loc.x + 1 or aloc.x == loc.x - 1:
-                    return True
-                else:
-                    return False
-            else:
-                return False
       #################################################################################
     #     Rtable = np.zeros((worldLength,worldBreadth))
     #     Utable = np.zeros((worldLength,worldBreadth))

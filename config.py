@@ -8,13 +8,13 @@
 # Last Modified: 12/01/22
 
 # Dimensions in terms of the numbers of rows and columns
-worldLength = 15
-worldBreadth = 15
+worldLength = 10
+worldBreadth = 10
 
 # Features
 numberOfMeanies = 1 # How many we start with
 numberOfPits = 3
-numberOfBonuses = 6
+numberOfBonuses = 3
 
 # Control dynamism
 #
@@ -25,7 +25,7 @@ dynamic = True
 #
 # If partialVisibility is True, Tallon will only see part of the
 # environment.
-partialVisibility = False
+partialVisibility = True
 #
 # The limits of visibility when visibility is partial
 visibilityLimit = 6

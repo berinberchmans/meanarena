@@ -12,6 +12,9 @@ numpy.set_printoptions(threshold=sys.maxsize)
 
 import csv
 
+import random
+
+
 import world
 import random
 from config import worldLength, worldBreadth, partialVisibility, visibilityLimit
@@ -44,12 +47,7 @@ class Tallon():
         # firstBonus = allBonuses[0]
         allPits = self.gameWorld.getPitsLocation() 
         allMeanies = self.gameWorld.getMeanieLocation()
-
-
-
-
-
-
+        myPosition = self.gameWorld.getTallonLocation()
         a=[]
         cc =[]
         tt =[]
@@ -69,33 +67,93 @@ class Tallon():
             mmProx.append([mns.x,((worldBreadth-1)-mns.y)+1])
 
    
+        # Meaniproximity = self.gameWorld.tallonWindy()
+        # print(Meaniproximity)
+
+
         # cc =[]
         # tt =[]
         # cc.append([firstBonus.x,(worldBreadth-1)-firstBonus.y])
         # tt.append([allPits[0].x,(worldBreadth-1)-allPits[0].y])
-        # print(cc,tt)
+        print(tt)
 
-        
-        
-        # print(cc,tt)
+
+       #    QUESTION B
+        cudBBonus =[]
+        newModal = np.zeros((worldBreadth,worldLength))
+        if(len(cc) ==0):
+            if(partialVisibility == True):
+                    for ee02 in range (worldBreadth):
+                        for ff02 in range (worldLength):
+                            if([ff02,ee02] in tt):
+                                newModal[ff02][ee02]=666
+                    
+                    newModal = np.transpose(newModal)
+                    newModal = np.flipud(newModal)
+                    for ee0 in range (worldBreadth):
+                        for ff0 in range (worldLength):
+                            xtrue = False
+                            ytrue = False
+                            if(ff0 > myPosition.x):
+                                if((ff0 - myPosition.x)+1 < visibilityLimit):
+                                    xtrue= True
+                            else:
+                                if((myPosition.x - ff0)+1 < visibilityLimit):
+                                    xtrue= True
+                            if(ee0 > myPosition.y):
+                                if((ee0 -myPosition.y)+1 < visibilityLimit):
+                                    ytrue= True
+                            else:
+                                if((myPosition.y)+1 - ee0 < visibilityLimit):
+                                    ytrue= True
+                            if(xtrue == True and ytrue == True):
+                                newModal[ff0][(worldBreadth-1)- ee0]=666
+                 
+                    for gy in range (worldBreadth):
+                        for gx in range (worldLength):
+                            if(newModal[gx][gy]!=666):
+                                cudBBonus.append([gx,gy])
+                    print(newModal)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        #  END OF QUESTION B
+
+
         cost = -0.04
         for k in range (worldBreadth):
             for j in range(worldLength):
                 if([j,k] in tt):
-                    a.append([-1,-1,-1,-1])
+                    a.append([-3,-3,-3,-3])
                 elif([j,k] in mm):
                     a.append([-3,-3,-3,-3])
                 elif([j,k] in mmProx):
-                    a.append([-2,-2,-2,-2])
+                    a.append([-1.5,-1.5,-1.5,-1.5])
                 elif([j,k] in cc):
-                     a.append([1,1,1,1])
+                     a.append([5,5,5,5])
+                elif([j,k] in cudBBonus):
+                     rndd = random.uniform(0, 3)
+                     a.append([1+rndd,1+rndd,1+rndd,1+rndd])
                 else:
                     a.append([cost,cost,cost,cost])
      
         R3 = np.array(a)
         # R3 = np.flipud(R3)
         # print(R3)
-        myPosition = self.gameWorld.getTallonLocation()
+      
        
         rightDir = .8
         wrongDir = .1
@@ -133,6 +191,13 @@ class Tallon():
                     for n in range(worldBreadth):
                         for m in range(worldLength):
                             if(actCountx == m and actCounty == n and [m,n] in cc):
+                                rmat.append(1)
+                            else:
+                                rmat.append(0)
+                elif([actCountx,actCounty] in cudBBonus):
+                    for n in range(worldBreadth):
+                        for m in range(worldLength):
+                            if(actCountx == m and actCounty == n and [m,n] in cudBBonus):
                                 rmat.append(1)
                             else:
                                 rmat.append(0)
@@ -213,6 +278,13 @@ class Tallon():
                                 rmat.append(1)
                             else:
                                 rmat.append(0)
+                elif([actCountx,actCounty] in cudBBonus):
+                    for n in range(worldBreadth):
+                        for m in range(worldLength):
+                            if(actCountx == m and actCounty == n and [m,n] in cudBBonus):
+                                rmat.append(1)
+                            else:
+                                rmat.append(0)
                 else:
                     for n in range(worldBreadth):
                         for m in range(worldLength):
@@ -287,6 +359,13 @@ class Tallon():
                     for n in range(worldBreadth):
                         for m in range(worldLength):
                             if(actCountx == m and actCounty == n and [m,n] in cc):
+                                rmat.append(1)
+                            else:
+                                rmat.append(0)
+                elif([actCountx,actCounty] in cudBBonus):
+                    for n in range(worldBreadth):
+                        for m in range(worldLength):
+                            if(actCountx == m and actCounty == n and [m,n] in cudBBonus):
                                 rmat.append(1)
                             else:
                                 rmat.append(0)
@@ -368,6 +447,13 @@ class Tallon():
                                 rmat.append(1)
                             else:
                                 rmat.append(0)
+                elif([actCountx,actCounty] in cudBBonus):
+                    for n in range(worldBreadth):
+                        for m in range(worldLength):
+                            if(actCountx == m and actCounty == n and [m,n] in cudBBonus):
+                                rmat.append(1)
+                            else:
+                                rmat.append(0)
                 else:
                     for n in range(worldBreadth):
                         for m in range(worldLength):
@@ -411,17 +497,13 @@ class Tallon():
         # rmatTotal2 = np.flipud(rmatTotal2)
         fullAction.append(rmatTotal)
         fullAction = np.array(fullAction)
-        # print(fullAction)
-        # print("***********")
-      
+       
 
         mdptoolbox.util.check(fullAction, R3)
         vi2 = []
-        if(partialVisibility == True):
-            print("using qlearning")
-            vi2 = mdptoolbox.mdp.QLearning(fullAction, R3, 0.9)
-        else:
-            vi2 = mdptoolbox.mdp.PolicyIteration(fullAction, R3, 0.9)
+      
+        # else:
+        vi2 = mdptoolbox.mdp.PolicyIteration(fullAction, R3, 0.9)
         #vi2 = mdptoolbox.mdp.PolicyIteration(fullAction, R3, 0.9)
         vi2.run()       
 
@@ -511,22 +593,20 @@ class Tallon():
 
   
 
-        # open the file in the write mode
-        f = open('D:/Uni projects/AI/git/meanArena/temptext.csv', 'a')
-
-        # create the csv writer
-        writer = csv.writer(f)
-        cccc = finaldd2
-        # write a row to the csv file
-        for ynt in range(worldBreadth):
-            for xnt in range(worldLength):
-                if(ynt == oy and xnt == ox ):
-                    cccc[ynt][xnt] ="tallon"
-            writer.writerow(cccc[ynt])
-        writer.writerow("################################")
-        # close the file
-        f.close()
+        # f = open('D:/Uni projects/AI/git/meanArena/ztemptext.csv', 'a')
+        # writer = csv.writer(f)
+        # cccc = finaldd2
+        # for ynt in range(worldBreadth):
+        #     for xnt in range(worldLength):
+        #         if(ynt == oy and xnt == ox ):
+        #             cccc[ynt][xnt] =666
+        #     writer.writerow(cccc[ynt])
+        # writer.writerow("################################")
+        # f.close()
         
+
+
+
         if(max_index == 0):
                 print("SOUTH")
                 return Directions.SOUTH

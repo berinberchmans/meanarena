@@ -311,7 +311,7 @@ class World():
     #
     # A location is smelly if it is next to a Meanie
     def isSmelly(self, location):
-        if self.isAjacent(self.mloc, location):
+        if self.isAjacent(self.mLoc, location):
             return True
         else:
             return False
@@ -320,7 +320,7 @@ class World():
     #
     # A location is windy if it is near a pit
     def isWindy(self, location):
-        if self.isAjacent(self.ploc, location):
+        if self.isAjacent(self.pLoc, location):
             return True
         else:
             return False
@@ -329,7 +329,7 @@ class World():
     #
     # The bonus stations glow
     def isGlowing(self, location):
-        if self.isAjacent(self.bloc, location):
+        if self.isAjacent(self.bLoc, location):
             return True
         else:
             return False

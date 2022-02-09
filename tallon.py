@@ -8,14 +8,14 @@
 # Last Modified: 12/01/22
 import sys
 
-import csv
+
 
 import random
 
 
 import world
 import random
-from config import worldLength, worldBreadth, partialVisibility, visibilityLimit
+from config import worldLength, worldBreadth, partialVisibility, visibilityLimit, directionProbability
 import utils
 from utils import Directions
 
@@ -42,7 +42,6 @@ class Tallon():
         # 
         # Get the location of the Bonuses.
         allBonuses = self.gameWorld.getBonusLocation()
-        # firstBonus = allBonuses[0]
         allPits = self.gameWorld.getPitsLocation() 
         allMeanies = self.gameWorld.getMeanieLocation()
         myPosition = self.gameWorld.getTallonLocation()
@@ -65,7 +64,7 @@ class Tallon():
             mmProx.append([mns.x,((worldBreadth-1)-mns.y)+1])
 
 
-       #    QUESTION B
+       # Code segment specific to  QUESTION B
         cudBBonus =[]
         newModal = np.zeros((worldBreadth,worldLength))
         if(len(cc) ==0):
@@ -103,7 +102,7 @@ class Tallon():
                     # print(newModal)
 
 
-        #  END OF QUESTION B
+        # END OF QUESTION B
 
         cost = -0.04
         for k in range (worldBreadth):
@@ -124,16 +123,12 @@ class Tallon():
      
         R3 = np.array(a)      
        
-        rightDir = .8
-        wrongDir = .1
+        goodaction = directionProbability
+        badaction = (1 - directionProbability)/2
         fullAction = []
-
         rmatTotal =[]
-       
         rmat =[]
-        direction = 0
        
-
         for inx in range(4):
             rmatTotal =[]
             rmat =[]
@@ -179,389 +174,80 @@ class Tallon():
                             for n in range(worldBreadth):
                                 for m in range(worldLength):
                                         if(actCountx == m and actCounty == n):
-                                            rmat.append(wrongDir)
+                                            rmat.append(badaction)
                                         elif(actCountx+1 == m and actCounty == n):
-                                            rmat.append(rightDir)
+                                            rmat.append(goodaction)
                                         elif(actCountx == m and actCounty+1 == n):
-                                            rmat.append(wrongDir)
+                                            rmat.append(badaction)
                                         elif(actCountx == m and actCounty-1 == n):
-                                            rmat.append(wrongDir)
+                                            rmat.append(badaction)
                                         else:
                                             rmat.append(0)
                         elif(inx==1):
                             for n in range(worldBreadth):
                                 for m in range(worldLength):
                                         if(actCountx == m and actCounty == n):
-                                            rmat.append(wrongDir)
+                                            rmat.append(badaction)
                                         elif(actCountx-1 == m and actCounty == n):
-                                            rmat.append(rightDir)
+                                            rmat.append(goodaction)
                                         elif(actCountx == m and actCounty+1 == n):
-                                            rmat.append(wrongDir)
+                                            rmat.append(badaction)
                                         elif(actCountx == m and actCounty-1 == n):
-                                            rmat.append(wrongDir)
+                                            rmat.append(badaction)
                                         else:
                                             rmat.append(0)
                         elif(inx==2):
                             for n in range(worldBreadth):
                                 for m in range(worldLength):
                                         if(actCountx == m and actCounty == n):
-                                            rmat.append(wrongDir)
+                                            rmat.append(badaction)
                                         elif(actCountx+1 == m and actCounty == n):
-                                            rmat.append(wrongDir)
+                                            rmat.append(badaction)
                                         elif(actCountx == m and actCounty-1 == n):
-                                            rmat.append(rightDir)
+                                            rmat.append(goodaction)
                                         elif(actCountx-1 == m and actCounty == n):
-                                            rmat.append(wrongDir)
+                                            rmat.append(badaction)
                                         else:
                                             rmat.append(0)
                         else:
                             for n in range(worldBreadth):
                                 for m in range(worldLength):
                                         if(actCountx == m and actCounty == n):
-                                            rmat.append(wrongDir)
+                                            rmat.append(badaction)
                                         elif(actCountx+1 == m and actCounty == n):
-                                            rmat.append(wrongDir)
+                                            rmat.append(badaction)
                                         elif(actCountx == m and actCounty+1 == n):
-                                            rmat.append(rightDir)
+                                            rmat.append(goodaction)
                                         elif(actCountx-1 == m and actCounty == n):
-                                            rmat.append(wrongDir)
+                                            rmat.append(badaction)
                                         else:
                                             rmat.append(0)        
                     
-                    ans = sum(rmat)
-                    if(ans<1):
+                    rowsum = sum(rmat)
+                    if(rowsum<1):
                         done = 0
                         for jj in rmat:
                             
                             if(jj>0 and done ==0):
-                                compliment = 1-ans
+                                compliment = 1-rowsum
                                 rmat[rmat.index(jj)] = jj+compliment
                                 done = 1
-                    if(ans>1):
+                    if(rowsum>1):
                         done = 0
                         for jj in rmat:
                         
                             if(jj>0 and done ==0):
-                                compliment = ans -1
+                                compliment = rowsum -1
                                 if(jj > compliment):
-                                    rmat[rmat.index(jj)] =    round(jj - compliment, 1)
-                                    done = 1               
+                                    rmat[rmat.index(jj)] =    jj - compliment
+                                    done = 1             
                     rmatTotal.append(rmat)
                     rmat = []   
             rmatTotal2= np.array(rmatTotal)
             fullAction.append(rmatTotal2)
             rmatTotal =[]
             rmat =[]
-        # # right
-        # for actCounty in range (worldBreadth):
-        #     for actCountx in range (worldLength):
-        #         if([actCountx,actCounty] in tt):
-        #             for n in range(worldBreadth):
-        #                 for m in range(worldLength):
-        #                     if(actCountx == m and actCounty == n and [m,n] in tt):
-        #                         rmat.append(1)
-        #                     else:
-        #                         rmat.append(0)
-        #         elif([actCountx,actCounty] in mm):
-        #             for n in range(worldBreadth):
-        #                 for m in range(worldLength):
-        #                     if(actCountx == m and actCounty == n and [m,n] in mm):
-        #                         rmat.append(1)
-        #                     else:
-        #                         rmat.append(0)
-        #         elif([actCountx,actCounty] in mmProx):
-        #             for n in range(worldBreadth):
-        #                 for m in range(worldLength):
-        #                     if(actCountx == m and actCounty == n and [m,n] in mmProx):
-        #                         rmat.append(1)
-        #                     else:
-        #                         rmat.append(0)
-        #         elif([actCountx,actCounty] in cc):
-        #             for n in range(worldBreadth):
-        #                 for m in range(worldLength):
-        #                     if(actCountx == m and actCounty == n and [m,n] in cc):
-        #                         rmat.append(1)
-        #                     else:
-        #                         rmat.append(0)
-        #         elif([actCountx,actCounty] in cudBBonus):
-        #             for n in range(worldBreadth):
-        #                 for m in range(worldLength):
-        #                     if(actCountx == m and actCounty == n and [m,n] in cudBBonus):
-        #                         rmat.append(1)
-        #                     else:
-        #                         rmat.append(0)
-        #         else:
-        #             for n in range(worldBreadth):
-        #                 for m in range(worldLength):
-        #                         if(actCountx == m and actCounty == n):
-        #                             rmat.append(wrongDir)
-        #                         elif(actCountx+1 == m and actCounty == n):
-        #                             rmat.append(rightDir)
-        #                         elif(actCountx == m and actCounty+1 == n):
-        #                             rmat.append(wrongDir)
-        #                         elif(actCountx == m and actCounty-1 == n):
-        #                             rmat.append(wrongDir)
-        #                         else:
-        #                             rmat.append(0)
-        #         ans = sum(rmat)
-        #         if(ans<1):
-        #             done = 0
-        #             for jj in rmat:
-                        
-        #                 if(jj>0 and done ==0):
-        #                     compliment = 1-ans
-        #                     rmat[rmat.index(jj)] = jj+compliment
-        #                     done = 1
-        #         if(ans>1):
-        #             done = 0
-        #             for jj in rmat:
-                      
-        #                 if(jj>0 and done ==0):
-        #                     compliment = ans -1
-        #                     if(jj > compliment):
-        #                         rmat[rmat.index(jj)] =    round(jj - compliment, 1)
-
-        #                         done = 1
-        #         ans = sum(rmat)
-        #         rmatTotal.append(rmat)
-        #         rmat = []     
-        # rmatTotal2= np.array(rmatTotal)
-        # fullAction.append(rmatTotal2)
-        # rmatTotal =[]
-        # rmat =[]
-
-        # #Left
-        # for actCounty in range (worldBreadth):
-        #     for actCountx in range (worldLength):
-        #         if([actCountx,actCounty] in tt):
-        #             for n in range(worldBreadth):
-        #                 for m in range(worldLength):
-        #                     if(actCountx == m and actCounty == n and [m,n] in tt):
-        #                         rmat.append(1)
-        #                     else:
-        #                         rmat.append(0)
-        #         elif([actCountx,actCounty] in mm):
-        #             for n in range(worldBreadth):
-        #                 for m in range(worldLength):
-        #                     if(actCountx == m and actCounty == n and [m,n] in mm):
-        #                         rmat.append(1)
-        #                     else:
-        #                         rmat.append(0)
-        #         elif([actCountx,actCounty] in mmProx):
-        #             for n in range(worldBreadth):
-        #                 for m in range(worldLength):
-        #                     if(actCountx == m and actCounty == n and [m,n] in mmProx):
-        #                         rmat.append(1)
-        #                     else:
-        #                         rmat.append(0)
-        #         elif([actCountx,actCounty] in cc):
-        #             for n in range(worldBreadth):
-        #                 for m in range(worldLength):
-        #                     if(actCountx == m and actCounty == n and [m,n] in cc):
-        #                         rmat.append(1)
-        #                     else:
-        #                         rmat.append(0)
-        #         elif([actCountx,actCounty] in cudBBonus):
-        #             for n in range(worldBreadth):
-        #                 for m in range(worldLength):
-        #                     if(actCountx == m and actCounty == n and [m,n] in cudBBonus):
-        #                         rmat.append(1)
-        #                     else:
-        #                         rmat.append(0)
-        #         else:
-        #             for n in range(worldBreadth):
-        #                 for m in range(worldLength):
-        #                         if(actCountx == m and actCounty == n):
-        #                             rmat.append(wrongDir)
-        #                         elif(actCountx-1 == m and actCounty == n):
-        #                             rmat.append(rightDir)
-        #                         elif(actCountx == m and actCounty+1 == n):
-        #                             rmat.append(wrongDir)
-        #                         elif(actCountx == m and actCounty-1 == n):
-        #                             rmat.append(wrongDir)
-        #                         else:
-        #                             rmat.append(0)
-        #         ans = sum(rmat)
-        #         if(ans<1):
-        #             done = 0
-        #             for jj in rmat:
-                        
-        #                 if(jj>0 and done ==0):
-        #                     compliment = 1-ans
-        #                     rmat[rmat.index(jj)] = jj+compliment
-        #                     done = 1
-        #         if(ans>1):
-        #             done = 0
-        #             for jj in rmat:
-                      
-        #                 if(jj>0 and done ==0):
-        #                     compliment = ans -1
-        #                     if(jj > compliment):
-        #                         rmat[rmat.index(jj)] =    round(jj - compliment, 1)
-
-        #                         done = 1
-                
-        #         rmatTotal.append(rmat)
-        #         rmat = []     
-        # rmatTotal2= np.array(rmatTotal)
-        # fullAction.append(rmatTotal2)
-        # rmatTotal =[]
-        # rmat =[]
-
-        #  #UP
-        # for actCounty in range (worldBreadth):
-        #     for actCountx in range (worldLength):
-        #         if([actCountx,actCounty] in tt):
-        #             for n in range(worldBreadth):
-        #                 for m in range(worldLength):
-        #                     if(actCountx == m and actCounty == n and [m,n] in tt):
-        #                         rmat.append(1)
-        #                     else:
-        #                         rmat.append(0)
-        #         elif([actCountx,actCounty] in mm):
-        #             for n in range(worldBreadth):
-        #                 for m in range(worldLength):
-        #                     if(actCountx == m and actCounty == n and [m,n] in mm):
-        #                         rmat.append(1)
-        #                     else:
-        #                         rmat.append(0)
-        #         elif([actCountx,actCounty] in mmProx):
-        #             for n in range(worldBreadth):
-        #                 for m in range(worldLength):
-        #                     if(actCountx == m and actCounty == n and [m,n] in mmProx):
-        #                         rmat.append(1)
-        #                     else:
-        #                         rmat.append(0)
-        #         elif([actCountx,actCounty] in cc):
-        #             for n in range(worldBreadth):
-        #                 for m in range(worldLength):
-        #                     if(actCountx == m and actCounty == n and [m,n] in cc):
-        #                         rmat.append(1)
-        #                     else:
-        #                         rmat.append(0)
-        #         elif([actCountx,actCounty] in cudBBonus):
-        #             for n in range(worldBreadth):
-        #                 for m in range(worldLength):
-        #                     if(actCountx == m and actCounty == n and [m,n] in cudBBonus):
-        #                         rmat.append(1)
-        #                     else:
-        #                         rmat.append(0)
-        #         else:
-        #             for n in range(worldBreadth):
-        #                 for m in range(worldLength):
-        #                         if(actCountx == m and actCounty == n):
-        #                             rmat.append(wrongDir)
-        #                         elif(actCountx+1 == m and actCounty == n):
-        #                             rmat.append(wrongDir)
-        #                         elif(actCountx == m and actCounty-1 == n):
-        #                             rmat.append(rightDir)
-        #                         elif(actCountx-1 == m and actCounty == n):
-        #                             rmat.append(wrongDir)
-        #                         else:
-        #                             rmat.append(0)
-        #         ans = sum(rmat)
-        #         if(ans<1):
-        #             done = 0
-        #             for jj in rmat:
-                        
-        #                 if(jj>0 and done ==0):
-        #                     compliment = 1-ans
-        #                     rmat[rmat.index(jj)] = jj+compliment
-        #                     done = 1
-        #         if(ans>1):
-        #             done = 0
-        #             for jj in rmat:
-                      
-        #                 if(jj>0 and done ==0):
-        #                     compliment = ans -1
-        #                     if(jj > compliment):
-        #                         rmat[rmat.index(jj)] =    round(jj - compliment, 1)
-        #                         done = 1               
-        #         rmatTotal.append(rmat)
-        #         rmat = []   
-        # rmatTotal2= np.array(rmatTotal)
-        # fullAction.append(rmatTotal2)
-        # rmatTotal =[]
-        # rmat =[]
-
-        #  #DOWN
-        # for actCounty in range (worldBreadth):
-        #     for actCountx in range (worldLength):
-        #         if([actCountx,actCounty] in tt):
-        #             for n in range(worldBreadth):
-        #                 for m in range(worldLength):
-        #                     if(actCountx == m and actCounty == n and [m,n] in tt):
-        #                         rmat.append(1)
-        #                     else:
-        #                         rmat.append(0)
-        #         elif([actCountx,actCounty] in mm):
-        #             for n in range(worldBreadth):
-        #                 for m in range(worldLength):
-        #                     if(actCountx == m and actCounty == n and [m,n] in mm):
-        #                         rmat.append(1)
-        #                     else:
-        #                         rmat.append(0)
-        #         elif([actCountx,actCounty] in mmProx):
-        #             for n in range(worldBreadth):
-        #                 for m in range(worldLength):
-        #                     if(actCountx == m and actCounty == n and [m,n] in mmProx):
-        #                         rmat.append(1)
-        #                     else:
-        #                         rmat.append(0)
-        #         elif([actCountx,actCounty] in cc):
-        #             for n in range(worldBreadth):
-        #                 for m in range(worldLength):
-        #                     if(actCountx == m and actCounty == n and [m,n] in cc):
-        #                         rmat.append(1)
-        #                     else:
-        #                         rmat.append(0)
-        #         elif([actCountx,actCounty] in cudBBonus):
-        #             for n in range(worldBreadth):
-        #                 for m in range(worldLength):
-        #                     if(actCountx == m and actCounty == n and [m,n] in cudBBonus):
-        #                         rmat.append(1)
-        #                     else:
-        #                         rmat.append(0)
-        #         else:
-        #             for n in range(worldBreadth):
-        #                 for m in range(worldLength):
-        #                         if(actCountx == m and actCounty == n):
-        #                             rmat.append(wrongDir)
-        #                         elif(actCountx+1 == m and actCounty == n):
-        #                             rmat.append(wrongDir)
-        #                         elif(actCountx == m and actCounty+1 == n):
-        #                             rmat.append(rightDir)
-        #                         elif(actCountx-1 == m and actCounty == n):
-        #                             rmat.append(wrongDir)
-        #                         else:
-        #                             rmat.append(0)          
-        #         ans = sum(rmat)
-        #         if(ans<1):
-        #             done = 0
-        #             for jj in rmat:
-                        
-        #                 if(jj>0 and done ==0):
-        #                     compliment = 1-ans
-        #                     rmat[rmat.index(jj)] = jj+compliment
-        #                     done = 1
-        #         if(ans>1):
-        #             done = 0
-        #             for jj in rmat:
-                      
-        #                 if(jj>0 and done ==0):
-        #                     compliment = ans -1
-        #                     if(jj > compliment):
-        #                         rmat[rmat.index(jj)] =    round(jj - compliment, 1)
-
-        #                         done = 1
-                
-        #         rmatTotal.append(rmat)
-        #         rmat = []     
-        # rmatTotal2= np.array(rmatTotal)
-        # fullAction.append(rmatTotal2)
-        # fullAction = np.array(fullAction)
-       
-
+        
         mdptoolbox.util.check(fullAction, R3)
         vi2 = []
         vi2 = mdptoolbox.mdp.PolicyIteration(fullAction, R3, 0.9)
@@ -594,7 +280,7 @@ class Tallon():
         finaldd2  =np.array(finaldd2)
         finaldd2 = np.flipud(finaldd2)
        
-
+        
         themove = finaldd[myPosition.x][(worldBreadth-1)-myPosition.y]
         
         gg=[]

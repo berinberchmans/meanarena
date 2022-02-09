@@ -1,5 +1,8 @@
 import mdptoolbox
 import numpy as np
+import csv
+
+
 
 # The MDP Toolbox defines MDPs through a probability array and a reward array.
 
@@ -108,3 +111,35 @@ vi2.run()
 
 print('Values:\n', vi2.V)
 print('Policy:\n', vi2.policy)
+
+    # f = open('D:/Uni projects/AI/git/meanArena/ztemptext.csv', 'a')
+        # writer = csv.writer(f)
+        # cccc = finaldd2
+        # for ynt in range(worldBreadth):
+        #     for xnt in range(worldLength):
+        #         if(ynt == oy and xnt == ox ):
+        #             cccc[ynt][xnt] =666
+        #     writer.writerow(cccc[ynt])
+        # writer.writerow("################################")
+        # f.close()
+        
+
+                   
+        # Policy movement
+        # if(themove == 0):
+        #     print("Right")
+        #     return Directions.EAST
+        # elif(themove == 1):
+        #     print("Left")
+        #     return Directions.WEST
+        # elif(themove == 2):
+        #     print("Up")
+        #     return Directions.SOUTH
+        # elif(themove == 3):
+        #     print("Down")
+        #     return Directions.NORTH
+        
+themove = finaldd[myPosition.x][(worldBreadth-1)-myPosition.y]
+
+
+This is a solution that works, however only efficiently in case of arenas with limited sizes, as with the increase in size and decrease in visibility limit will require Tallon to waste time searching. However, for the scope of this game, the method works as it doesn’t require extremely large arenas..

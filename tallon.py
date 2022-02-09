@@ -42,14 +42,20 @@ class Tallon():
         # 
         # Get the location of the Bonuses.
         allBonuses = self.gameWorld.getBonusLocation()
+        # Get the location of the Pits.
         allPits = self.gameWorld.getPitsLocation() 
+        # Get the location of the Meanies.
         allMeanies = self.gameWorld.getMeanieLocation()
+        # Get the location of Tallon.
         myPosition = self.gameWorld.getTallonLocation()
+
         a=[]
         cc =[]
         tt =[]
         mm =[]
         mmProx =[]
+
+        # Creating arrays storing the location of bonuses, meanies, locations adjacent to meanies and pits.
         for ik in allBonuses:
             cc.append([ik.x,(worldBreadth-1)-ik.y])
         for pts in allPits:
@@ -61,10 +67,13 @@ class Tallon():
             mmProx.append([mns.x+1,(worldBreadth-1)-mns.y])
             mmProx.append([mns.x-1,(worldBreadth-1)-mns.y])
             mmProx.append([mns.x,((worldBreadth-1)-mns.y)+1])
-            mmProx.append([mns.x,((worldBreadth-1)-mns.y)+1])
+            mmProx.append([mns.x,((worldBreadth-1)-mns.y)-1])
 
 
        # Code segment specific to  QUESTION B
+       # This part checks if there are no bonuses visible. If no, it takes all the locations
+       # that are not within visibility limit and are not pits, and later I assign them a 
+       # random positive reward.
         cudBBonus =[]
         newModal = np.zeros((worldBreadth,worldLength))
         if(len(cc) ==0):
@@ -99,11 +108,12 @@ class Tallon():
                         for gx in range (worldLength):
                             if(newModal[gx][gy]!=666):
                                 cudBBonus.append([gx,gy])
-                    # print(newModal)
 
 
         # END OF QUESTION B
 
+        # Making the rewards array | pits -> -3 | meanie -> -3 | meannie proximity -> -1.5
+        # bonus -> 5 | potential bonus - > random value between 1 and 4 | other -> -0.04
         cost = -0.04
         for k in range (worldBreadth):
             for j in range(worldLength):
@@ -123,12 +133,14 @@ class Tallon():
      
         R3 = np.array(a)      
        
+        # Getting the probability for non-deterministic action
         goodaction = directionProbability
         badaction = (1 - directionProbability)/2
         fullAction = []
         rmatTotal =[]
         rmat =[]
        
+        # calculating the transition model for actions -> right ,left, up and down
         for inx in range(4):
             rmatTotal =[]
             rmat =[]
@@ -222,7 +234,6 @@ class Tallon():
                                             rmat.append(badaction)
                                         else:
                                             rmat.append(0)        
-                    
                     rowsum = sum(rmat)
                     if(rowsum<1):
                         done = 0
@@ -248,10 +259,10 @@ class Tallon():
             rmatTotal =[]
             rmat =[]
         
+        # generating utility values using value iteration - (using mdptoolbox)
         mdptoolbox.util.check(fullAction, R3)
         vi2 = []
-        vi2 = mdptoolbox.mdp.PolicyIteration(fullAction, R3, 0.9)
-        #vi2 = mdptoolbox.mdp.PolicyIteration(fullAction, R3, 0.9)
+        vi2 = mdptoolbox.mdp.ValueIteration(fullAction, R3, 0.9)
         vi2.run()       
 
         dd =[]
@@ -260,6 +271,7 @@ class Tallon():
         finaldd2 = []
         countd = 0
         countd2 = 0
+
         for ee in range (worldBreadth):
             for ff in range (worldLength):
                 dd.append(vi2.policy[countd])
@@ -267,6 +279,7 @@ class Tallon():
             finaldd.append(dd)
             dd = []
         
+        # Making the utility value matrix
         for ee in range (worldBreadth):
             for ff in range (worldLength):
                 vv.append(vi2.V[countd2])
@@ -281,8 +294,8 @@ class Tallon():
         finaldd2 = np.flipud(finaldd2)
        
         
-        themove = finaldd[myPosition.x][(worldBreadth-1)-myPosition.y]
         
+        # Greedy checking the utility values of next states to find optimal action
         gg=[]
         #UP
         ox = myPosition.x
@@ -319,11 +332,11 @@ class Tallon():
         else:
                 gg.append(-100)
 
- 
-        
+    
         max_value = max(gg)
         max_index = gg.index(max_value)
 
+        # Applying the optimal action
         if(max_index == 0):
                 print("SOUTH")
                 return Directions.SOUTH
@@ -336,20 +349,5 @@ class Tallon():
         elif(max_index == 3):
                 print("WEST")
                 return Directions.WEST
-            
-        # Policy movement
-        # if(themove == 0):
-        #     print("Right")
-        #     return Directions.EAST
-        # elif(themove == 1):
-        #     print("Left")
-        #     return Directions.WEST
-        # elif(themove == 2):
-        #     print("Up")
-        #     return Directions.SOUTH
-        # elif(themove == 3):
-        #     print("Down")
-        #     return Directions.NORTH
-        
-
+ 
     

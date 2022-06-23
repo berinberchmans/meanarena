@@ -14,7 +14,7 @@ worldBreadth = 10
 # Features
 numberOfMeanies = 1 # How many we start with
 numberOfPits = 3
-numberOfBonuses = 3
+numberOfBonuses = 2
 
 # Control dynamism
 #
@@ -25,7 +25,7 @@ dynamic = True
 #
 # If partialVisibility is True, Tallon will only see part of the
 # environment.
-partialVisibility = True
+partialVisibility = False
 #
 # The limits of visibility when visibility is partial
 visibilityLimit = 6
@@ -34,7 +34,7 @@ visibilityLimit = 6
 #
 # If nonDeterministic is True, Tallon's action model will be
 # nonDeterministic.
-nonDeterministic = True
+nonDeterministic = False
 #
 # If Tallon is nondeterministic, probability that they carry out the
 # intended action:
@@ -50,7 +50,7 @@ bonusValue = 10
 scoreInterval = 2
 
 # How often we add a Meanie
-meanieInterval = 5
+meanieInterval = 3
 
 # Control images
 #
